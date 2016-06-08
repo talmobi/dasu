@@ -1,0 +1,11 @@
+{
+  "name": "dasu",
+  "version": "0.0.0",
+  "description": "consistent XMLHttpRequest for node.js and the browser",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "talmobi <talmo.christian@gmail.com>",
+  "license": "MIT"
+}
