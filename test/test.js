@@ -10,10 +10,10 @@ test('sample test', t => {
 
 const PORT = 4488
 
-test('start mockup test server', t => {
+test('start local mockup test server', t => {
   t.plan(1)
   server.listen(PORT, function () {
-    t.ok(server.listening, 'server is listening')
+    t.ok(server.listening, 'mockup test server is listening')
   })
 })
 
@@ -95,14 +95,14 @@ test('test public uinames.com api (returns a random person information)', t => {
     t.error(err, 'no xhr errors')
     t.ok(data, 'data received')
     var json = JSON.parse(data)
-    t.ok(json.name)
-    t.ok(json.surname)
-    t.ok(json.gender)
-    t.ok(json.region)
+    t.ok('string' === typeof json.name, 'found name')
+    t.ok('string' === typeof json.surname, 'found surname')
+    t.ok('string' === typeof json.gender, 'found gender')
+    t.ok('string' === typeof json.region, 'found region')
   })
 })
 
-test('mockup test server closed', t => {
+test('close local mockpu test server', t => {
   t.plan(2)
   t.ok(server.listening, 'mockup test server still running')
   server.close()
