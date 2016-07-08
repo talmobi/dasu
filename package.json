@@ -1,10 +1,11 @@
 {
   "name": "dasu",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "consistent XMLHttpRequest for node.js and the browser",
   "main": "dist/bundle.js",
   "scripts": {
     "build": "rollup -f umd dasu.js > dist/bundle.js",
+    "prepublish": "npm run build && npm test",
     "test": "tape test/*test*.js | tap-spec"
   },
   "repository": {
