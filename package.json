@@ -1,11 +1,24 @@
 {
   "name": "dasu",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "consistent XMLHttpRequest for node.js and the browser",
-  "main": "index.js",
+  "main": "dist/bundle.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rollup -f umd dasu.js > dist/bundle.js",
+    "test": "tape test/*test*.js | tap-spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/talmobi/dasu"
   },
   "author": "talmobi <talmo.christian@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/talmobi/dasu/issues"
+  },
+  "devDependencies": {
+    "express": "^4.14.0",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.6.0"
+  }
 }
