@@ -1,11 +1,12 @@
 # 出す　ー　dasu
-## Barebones XMLHttpRequest for browser and server
+## The same xhr API for both client and server
 
 Simple to use:
-```
+```javascript
 var dasu = require('dasu')
 var xhr = dasu.xhr
 
+// works just like Node's require('http').request
 var params = {
   path: '/api/',
   hostname: 'uinames.com',
@@ -22,12 +23,11 @@ xhr(params, function (err, data) {
 ```
 
 ## About
-Use the same XHR in the browser and on the server. Similar libraries already exists such as https://github.com/ykzts/node-xmlhttprequest. This aims to be as simple and minimalistic as possible.
+Using XMLHttpRequest or Node's http libraries under the hood, **dasu** aims to streamline your basic xhr for both contexts. It provides the familiar structure to Node's http library (http://devdocs.io/node/http#http_http_request_options_callback)
 
 
 ## Why
-Sometimes you'd like to test how a XMLHttpRequest would work on the server side without opening up the browser.
-For example when making automated tests for client login/regisration.
+Test your client side request/fetch/xhr logic on the server side with the same api you're using on the client.
 
 
 ## Install
