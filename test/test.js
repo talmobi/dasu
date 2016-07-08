@@ -61,6 +61,47 @@ test('get echoes', t => {
   })
 })
 
+test('test public ipify.org ip (returns your ip)', t => {
+  t.plan(3)
+
+  var params = {
+    path: '/',
+    hostname: 'api.ipify.org',
+    protocol: 'https:',
+    port: 80,
+    method: 'GET'
+  }
+
+  xhr(params, function (err, data) {
+    t.error(err, 'no xhr errors')
+    t.ok(data, 'data received')
+    var ip = data
+    t.equal(ip.split('.').filter(n => Number(n) == n).length, 4, 'ip v4 found as expected')
+  })
+})
+
+test('test public uinames.com api (returns a random person information)', t => {
+  t.plan(6)
+
+  var params = {
+    path: '/api/',
+    hostname: 'uinames.com',
+    protocol: 'http:',
+    port: 80,
+    method: 'GET'
+  }
+
+  xhr(params, function (err, data) {
+    t.error(err, 'no xhr errors')
+    t.ok(data, 'data received')
+    var json = JSON.parse(data)
+    t.ok(json.name)
+    t.ok(json.surname)
+    t.ok(json.gender)
+    t.ok(json.region)
+  })
+})
+
 test('mockup test server closed', t => {
   t.plan(2)
   t.ok(server.listening, 'mockup test server still running')
