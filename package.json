@@ -1,7 +1,7 @@
 {
   "name": "dasu",
-  "version": "0.0.5",
-  "description": "consistent XMLHttpRequest for node.js and the browser",
+  "version": "0.0.6",
+  "description": "Consistent xhr API for both client and server (http.request)",
   "main": "dist/bundle.js",
   "scripts": {
     "build": "rollup -f umd dasu.js > dist/bundle.js",
@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "express": "^4.14.0",
+    "rollup": "^0.33.1",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.0"
   }
