@@ -1,23 +1,24 @@
 // basic streamlined xhr request for browser and server
 
 var request = function () {
-  throw new Error("No request implemention specified in dasu.js")
+  throw new Error('No request implemention specified in dasu.js')
 }
 
 if (typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefined') {
   // use XMLHttpRequest
 
   request = function (opts, dataString, callback) {
-    var req = new XMLHttpRequest()
+    var req = new window.XMLHttpRequest()
 
     opts.protocol = opts.protocol || 'http:'
+    if (opts.protocol[opts.protocol.length - 1] !== ':') opts.protocol += ':'
     // opts.host = opts.host || window.location.host
     opts.hostname = opts.hostname || window.location.hostname
     opts.port = opts.port || window.location.port
     var origin = opts.protocol + '//' + (opts.hostname + ':' + opts.port)
     // XMLHttpRequest takes a complete url (not host and path separately)
     var url = origin + opts.path
-    console.log("url: " + url)
+    console.log('dasu: url [' + url + ']')
     req.open(opts.method, url, true)
 
     req.onload = function () {
@@ -25,27 +26,29 @@ if (typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefined
     }
 
     req.onerror = function () {
-      callback(req.responseText || "dasu.js XMLHttpRequest error")
+      callback(req.responseText || 'dasu.js XMLHttpRequest error')
     }
 
     // attach headers to the request
-    //console.log(opts.headers)
+    // console.log(opts.headers)
     var headerKeys = Object.keys(opts.headers)
     for (var i = 0; i < headerKeys.length; i++) {
       var key = headerKeys[i]
       var value = opts.headers[key]
       req.setRequestHeader(key, value)
-      //console.log("set header: %s, to: %s", key, value)
+      // console.log("set header: %s, to: %s", key, value)
     }
-    req.send( dataString )
+    req.send(dataString)
   }
-} else {
-  // assume in nodejs environment, use nodejs core http lib
-  var http = require('http')
+} else { // assume in nodejs environment, use nodejs core http lib
+  // use this require hack so that bundlers don't automatically bundle
+  // node's http library within exported bundles
+  var require_ = require
+  var http = require_('http')
 
   request = function (opts, dataString, callback) {
     var req = http.request(opts, function (res) {
-      var buffer = ""
+      var buffer = ''
       res.on('data', function (chunk) {
         buffer += chunk
       })
@@ -56,50 +59,45 @@ if (typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefined
     })
 
     req.on('error', function (err) {
-      //console.error("error: " + err)
+      // console.error("error: " + err)
       callback(err)
     })
 
-    //console.log("rest: sending: " + dataString)
-    req.write( dataString )
+    // console.log("rest: sending: " + dataString)
+    req.write(dataString)
     req.end()
   }
 }
 
 function xhr (params, done) {
-
-  var contentType = ""
-  var data = (params.data || params.json) || ""
-  var dataString = ""
+  var contentType = ''
+  var data = (params.data || params.json) || ''
+  var dataString = ''
   switch (typeof data) {
     case 'object':
       dataString = JSON.stringify(data)
-      contentType = "application/json"
-    break
+      contentType = 'application/json'
+      break
     case 'string':
       dataString = data
-      contentType = "text/plain"
-    break
+      contentType = 'text/plain'
+      break
     default: // try coercion as a last resort
-      dataString = ("" + data)
-      contentType = "text/plain"
+      dataString = ('' + data)
+      contentType = 'text/plain'
   }
 
-  //console.log("rest: contentType: " + contentType)
+  // console.log("rest: contentType: " + contentType)
 
-  var params = Object.assign({}, params)
+  params = Object.assign({}, params)
   delete params.data
 
   // try to add content-type if it doesn't exist
   params.headers = Object.assign({}, {
-    'Content-Type': contentType
+    'content-type': contentType
   }, params.headers || {})
 
-  // if (!params.headers['Authorization'] && _token) {
-  //   params.headers['Authorization'] = _token
-  // }
-
-  //console.log("rest: headers: " + JSON.stringify(params.headers))
+  // console.log("rest: headers: " + JSON.stringify(params.headers))
 
   // set default method
   params.method = params.method || 'GET'
@@ -127,7 +125,6 @@ function xhr (params, done) {
       done(null, body)
     }
   })
-
 }
 
 var client = {

@@ -76,7 +76,7 @@ test('test public ipify.org ip (returns your ip)', t => {
     t.error(err, 'no xhr errors')
     t.ok(data, 'data received')
     var ip = data
-    t.equal(ip.split('.').filter(n => Number(n) == n).length, 4, 'ip v4 found as expected')
+    t.equal(ip.split('.').filter(n => Number(n) >= 0).length, 4, 'ipv4 found as expected')
   })
 })
 
@@ -95,10 +95,10 @@ test('test public uinames.com api (returns a random person information)', t => {
     t.error(err, 'no xhr errors')
     t.ok(data, 'data received')
     var json = JSON.parse(data)
-    t.ok('string' === typeof json.name, 'found name')
-    t.ok('string' === typeof json.surname, 'found surname')
-    t.ok('string' === typeof json.gender, 'found gender')
-    t.ok('string' === typeof json.region, 'found region')
+    t.ok(typeof json.name === 'string', 'found name')
+    t.ok(typeof json.surname === 'string', 'found surname')
+    t.ok(typeof json.gender === 'string', 'found gender')
+    t.ok(typeof json.region === 'string', 'found region')
   })
 })
 
