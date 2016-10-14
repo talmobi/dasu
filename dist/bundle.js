@@ -6,14 +6,14 @@
 
   // basic streamlined xhr request for browser and server
 
-  var request = function () {
+  var _request = function () {
     throw new Error('No request implemention specified in dasu.js')
   }
 
   if (typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefined') {
     // use XMLHttpRequest
 
-    request = function (opts, dataString, callback) {
+    _request = function (opts, dataString, callback) {
       var req = new window.XMLHttpRequest()
 
       opts.protocol = opts.protocol || 'http:'
@@ -28,7 +28,7 @@
       req.open(opts.method, url, true)
 
       req.onload = function () {
-        callback(null, req, req.responseText)
+        callback(undefined, req, req.responseText)
       }
 
       req.onerror = function () {
@@ -52,7 +52,7 @@
     var require_ = require
     var http = require_('http')
 
-    request = function (opts, dataString, callback) {
+    _request = function (opts, dataString, callback) {
       var req = http.request(opts, function (res) {
         var buffer = ''
         res.on('data', function (chunk) {
@@ -60,7 +60,7 @@
         })
 
         res.on('end', function () {
-          callback(null, res, buffer)
+          callback(undefined, res, buffer)
         })
       })
 
@@ -75,7 +75,7 @@
     }
   }
 
-  function xhr (params, done) {
+  function request (params, done) {
     var contentType = ''
     var data = (params.data || params.json) || ''
     var dataString = ''
@@ -124,17 +124,31 @@
     }
 
     // used XMLHttpRequest if availalb, else nodejs http library
-    request(opts, dataString, function (err, res, body) {
+    _request(opts, dataString, function (err, res, body) {
+      if (!res.getResponseHeader && res.headers) {
+        res.getResponseHeader = function (header) {
+          return res.headers[header]
+        }
+      }
+      if (res.getAllResponseHeaders && !res.headers) {
+        res.headers = res.getAllResponseHeaders()
+      }
+
       if (err) {
-        done(err, null)
+        done(err)
       } else {
-        done(null, body)
+        done(undefined, res, body)
       }
     })
   }
 
   var client = {
-    xhr: xhr
+    xhr: function (params, done) {
+      request(params, function (err, res, body) {
+        done(err, body)
+      })
+    },
+    req: request
   }
 
   module.exports = client

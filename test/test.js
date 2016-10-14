@@ -1,6 +1,7 @@
 var test = require('tape')
 var dasu = require('../dist/bundle.js')
 var xhr = dasu.xhr || dasu
+var req = dasu.req
 var server = require('./server.js')
 
 test('sample test', t => {
@@ -102,7 +103,29 @@ test('test public uinames.com api (returns a random person information)', t => {
   })
 })
 
-test('close local mockpu test server', t => {
+test('test response headers', { timeout: 2000 }, t => {
+  var params = {
+    path: '/echo/helloworld',
+    hostname: '127.0.0.1',
+    port: PORT,
+    method: 'POST'
+  }
+
+  req(params, function (err, res, data) {
+    t.equal(res.headers['content-type'], 'text/html; charset=utf-8', 'res.headers ok!')
+    t.equal(res.getResponseHeader('content-type'), 'text/html; charset=utf-8', 'res.getResponseHeader() ok!')
+
+    Object.keys(res.headers).forEach(function (header) {
+      t.equal(res.headers[header], res.getResponseHeader(header), 'header [' + header + '] ok!')
+    })
+
+    t.pass('response header tests passed!')
+    t.end()
+  })
+})
+
+
+test('close local mockup test server', t => {
   t.plan(2)
   t.ok(server.listening, 'mockup test server still running')
   server.close()
