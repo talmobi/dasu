@@ -119,7 +119,6 @@ function request (params, done) {
 
   // used XMLHttpRequest if availalb, else nodejs http library
   _request(opts, dataString, function (err, res, body) {
-
     if (err || res === undefined) {
       done(err)
     } else {
