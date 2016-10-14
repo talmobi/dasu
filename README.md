@@ -8,11 +8,11 @@ var req = dasu.req
 
 // same params as Node's require('http').request
 var params = {
-  path: '/api/',
-  hostname: 'uinames.com',
+  method: 'GET',
   protocol: 'http',
+  hostname: 'uinames.com',
   port: 80,
-  method: 'GET'
+  path: '/api/',
 }
 
 req(params, function (err, res, data) {
