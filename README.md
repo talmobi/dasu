@@ -4,23 +4,28 @@
 Simple to use:
 ```javascript
 var dasu = require('dasu')
-var xhr = dasu.xhr
+var req = dasu.req
 
-// works just like Node's require('http').request
+// same params as Node's require('http').request
 var params = {
-  path: '/api/',
+  method: 'GET',
+  protocol: 'http',
   hostname: 'uinames.com',
-  protocol: 'http:',
   port: 80,
-  method: 'GET'
+  path: '/api/',
 }
 
-xhr(params, function (err, data) {
+req(params, function (err, res, data) {
+  console.log(res.statusCode)
+  console.log(res.headers)
   var json = JSON.parse(data)
   console.log(json)
   // eg: {"name":"Milica","surname":"Maslo","gender":"female","region":"Slovakia"}
 })
 ```
+
+## Test in browser
+https://runkit.com/talmobi/runkit-npm-dasu
 
 ## About
 Using XMLHttpRequest or Node's http libraries under the hood, **dasu** aims to streamline your basic xhr for both contexts. It provides the familiar structure to Node's http library (http://devdocs.io/node/http#http_http_request_options_callback)
@@ -33,7 +38,7 @@ Test your client side request/fetch/xhr logic on the server side with the same a
 ## Install
 from npm
 ```
-npm install dasu
+npm install --save dasu
 ```
 
 from source
@@ -46,5 +51,8 @@ npm install
 
 ## Test
 ```
+git clone https://github.com/talmobi/dasu
+cd dasu
+npm install
 npm test
 ```
