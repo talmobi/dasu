@@ -103,7 +103,7 @@ test('test public uinames.com api (returns a random person information)', t => {
   })
 })
 
-test('test response headers', { timeout: 2000 }, t => {
+test('test dasu.req api && response headers', { timeout: 2000 }, t => {
   var params = {
     path: '/echo/helloworld',
     hostname: '127.0.0.1',
@@ -112,6 +112,8 @@ test('test response headers', { timeout: 2000 }, t => {
   }
 
   req(params, function (err, res, data) {
+    t.error(err, 'no errors ')
+
     t.equal(res.headers['content-type'], 'text/html; charset=utf-8', 'res.headers ok!')
     t.equal(res.getResponseHeader('content-type'), 'text/html; charset=utf-8', 'res.getResponseHeader() ok!')
 
@@ -123,7 +125,6 @@ test('test response headers', { timeout: 2000 }, t => {
     t.end()
   })
 })
-
 
 test('close local mockup test server', t => {
   t.plan(2)
