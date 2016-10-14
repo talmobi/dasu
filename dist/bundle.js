@@ -125,7 +125,6 @@
 
     // used XMLHttpRequest if availalb, else nodejs http library
     _request(opts, dataString, function (err, res, body) {
-
       // homogenize response headers
       if (!res.getResponseHeader && res.headers) {
         res.getResponseHeader = function (header) {
