@@ -126,6 +126,23 @@ test('test dasu.req api && response headers', { timeout: 2000 }, t => {
   })
 })
 
+test('test ressponse status code', { timeout: 2000 }, t => {
+  t.plan(3)
+
+  var params = {
+    path: '/echo/helloworld',
+    hostname: '127.0.0.1',
+    port: PORT,
+    method: 'POST'
+  }
+
+  req(params, function (err, res, data) {
+    t.error(err, 'no request errors ')
+    t.equal(res.statusCode, res.status, 'res.statusCode (NodeJS) === res.status (XMLHttpRequest)')
+    t.equal(res.statusCode, 200)
+  })
+})
+
 test('close local mockup test server', t => {
   t.plan(2)
   t.ok(server.listening, 'mockup test server still running')

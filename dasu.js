@@ -119,6 +119,7 @@ function request (params, done) {
 
   // used XMLHttpRequest if availalb, else nodejs http library
   _request(opts, dataString, function (err, res, body) {
+    // homogenize response headers
     if (!res.getResponseHeader && res.headers) {
       res.getResponseHeader = function (header) {
         return res.headers[header]
@@ -126,6 +127,13 @@ function request (params, done) {
     }
     if (res.getAllResponseHeaders && !res.headers) {
       res.headers = res.getAllResponseHeaders()
+    }
+
+    // homogenize response status
+    if (res.status === undefined) {
+      res.status = res.statusCode
+    } else {
+      res.statusCode = res.status
     }
 
     if (err) {

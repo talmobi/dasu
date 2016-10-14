@@ -7,7 +7,7 @@
     "build": "rollup -f umd dasu.js > dist/bundle.js",
     "prepublish": "npm run lint && npm run build && npm test",
     "lint": "standard",
-    "test": "npm run lint && npm run build && tape test/*test*.js | tap-spec"
+    "test": "npm run build && tape test/*test*.js | tap-spec"
   },
   "repository": {
     "type": "git",
