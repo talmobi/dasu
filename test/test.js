@@ -20,7 +20,7 @@ test('start local mockup test server', t => {
       port: PORT,
       method: 'GET'
     }, function (err, res, data) {
-      t.ok(!err && res && res.statusCode == 200, 'mockup test server is listening')
+      t.ok(!err && res && Number(res.statusCode) === 200, 'mockup test server is listening')
     })
   })
 })
@@ -159,7 +159,7 @@ test('close local mockup test server', t => {
     port: PORT,
     method: 'GET'
   }, function (err, res, data) {
-    t.ok(!err && res && res.statusCode == 200, 'server still running, closing...')
+    t.ok(!err && res && Number(res.statusCode) === 200, 'server still running, closing...')
     server.close()
 
     setTimeout(function () {
