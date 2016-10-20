@@ -10,7 +10,7 @@ if (typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefined
   _request = function (opts, dataString, callback) {
     var req = new window.XMLHttpRequest()
 
-    opts.protocol = opts.protocol || 'http:'
+    opts.protocol = opts.protocol || (window.location.protocol) || 'http'
     if (opts.protocol[opts.protocol.length - 1] !== ':') opts.protocol += ':'
     // opts.host = opts.host || window.location.host
     opts.hostname = opts.hostname || window.location.hostname
