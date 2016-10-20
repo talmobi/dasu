@@ -7,6 +7,10 @@ var users = [
   { name: 'lisa' }
 ]
 
+app.use('/running', function (req, res, next) {
+  res.status(200).end()
+})
+
 app.use('/users', function (req, res, next) {
   res.json({
     message: 'hello, yes, this is DOG!',

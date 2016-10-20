@@ -14,7 +14,14 @@ const PORT = 4488
 test('start local mockup test server', t => {
   t.plan(1)
   server.listen(PORT, function () {
-    t.ok(server.listening, 'mockup test server is listening')
+    req({
+      path: '/running',
+      hostname: '127.0.0.1',
+      port: PORT,
+      method: 'GET'
+    }, function (err, res, data) {
+      t.ok(!err && res && res.statusCode == 200, 'mockup test server is listening')
+    })
   })
 })
 
@@ -145,7 +152,25 @@ test('test ressponse status code', { timeout: 2000 }, t => {
 
 test('close local mockup test server', t => {
   t.plan(2)
-  t.ok(server.listening, 'mockup test server still running')
-  server.close()
-  t.ok(!server.listening, 'mockup test server closed')
+
+  req({
+    path: '/running',
+    hostname: '127.0.0.1',
+    port: PORT,
+    method: 'GET'
+  }, function (err, res, data) {
+    t.ok(!err && res && res.statusCode == 200, 'server still running, closing...')
+    server.close()
+
+    setTimeout(function () {
+      req({
+        path: '/running',
+        hostname: '127.0.0.1',
+        port: PORT,
+        method: 'GET'
+      }, function (err, res, data) {
+        t.ok(err && !res, 'server closed')
+      })
+    }, 1000)
+  })
 })
