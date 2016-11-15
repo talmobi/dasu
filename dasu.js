@@ -15,7 +15,7 @@ if (typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefined
     // opts.host = opts.host || window.location.host
     opts.hostname = opts.hostname || window.location.hostname
     opts.port = opts.port || window.location.port
-    var origin = opts.protocol + '//' + (opts.hostname + ':' + opts.port)
+    var origin = opts.protocol + '//' + (opts.hostname + (opts.port ? (':' + opts.port) : ''))
     // XMLHttpRequest takes a complete url (not host and path separately)
     var url = origin + opts.path
     console.log('dasu: url [' + url + ']')
@@ -39,6 +39,13 @@ if (typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefined
       // console.log("set header: %s, to: %s", key, value)
     }
     req.send(dataString)
+
+    // return minimal api to abort
+    return {
+      abort: function () {
+        req.abort()
+      }
+    }
   }
 } else { // assume in nodejs environment, use nodejs core http lib
   // use this require hack so that bundlers don't automatically bundle
@@ -66,6 +73,13 @@ if (typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefined
     // console.log("rest: sending: " + dataString)
     req.write(dataString)
     req.end()
+
+    // return minimal api to abort
+    return {
+      abort: function () {
+        req.abort()
+      }
+    }
   }
 }
 
@@ -118,7 +132,7 @@ function request (params, done) {
   }
 
   // used XMLHttpRequest if availalb, else nodejs http library
-  _request(opts, dataString, function (err, res, body) {
+  return _request(opts, dataString, function (err, res, body) {
     if (err || res === undefined) {
       done(err)
     } else {

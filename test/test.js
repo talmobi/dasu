@@ -133,7 +133,7 @@ test('test dasu.req api && response headers', { timeout: 2000 }, t => {
   })
 })
 
-test('test ressponse status code', { timeout: 2000 }, t => {
+test('test response status code', { timeout: 2000 }, t => {
   t.plan(3)
 
   var params = {
@@ -148,6 +148,39 @@ test('test ressponse status code', { timeout: 2000 }, t => {
     t.equal(res.statusCode, res.status, 'res.statusCode (NodeJS) === res.status (XMLHttpRequest)')
     t.equal(res.statusCode, 200)
   })
+})
+
+test('test abort() api', { timeout: 2000 }, t => {
+  t.plan(6)
+
+  var params = {
+    path: '/echo/helloworld',
+    hostname: '127.0.0.1',
+    port: PORT,
+    method: 'POST'
+  }
+
+  var r1 = req(params, function (err, res, data) {
+    t.error(err, 'first request succeeded (not aborted)')
+  })
+
+  var r2 = req(params, function (err, res, data) {
+    t.error(err, 'first request succeeded (not aborted)')
+    t.fail('failed to abort intended request (r2)')
+  })
+
+  var r3 = req(params, function (err, res, data) {
+    t.error(err, 'third request succeeded (not aborted)')
+  })
+
+  t.ok(typeof r1.abort === 'function', 'r1.abort() function found')
+  t.ok(typeof r2.abort === 'function', 'r2.abort() function found')
+  t.ok(typeof r3.abort === 'function', 'r3.abort() function found')
+
+  r2.abort()
+  setTimeout(function () {
+    t.ok(true, 'r2 was successfully aborted')
+  }, 1500)
 })
 
 test('close local mockup test server', t => {
