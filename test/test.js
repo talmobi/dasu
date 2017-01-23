@@ -76,7 +76,7 @@ test('test public ipify.org ip (returns your ip)', t => {
     path: '/',
     hostname: 'api.ipify.org',
     protocol: 'https:',
-    port: 80,
+    port: 443,
     method: 'GET'
   }
 
