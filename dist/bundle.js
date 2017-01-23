@@ -58,9 +58,16 @@
     // node's http library within exported bundles
     var require_ = require
     var http = require_('http')
+    var https = require_('https')
 
     _request = function (opts, dataString, callback) {
-      var req = http.request(opts, function (res) {
+      opts = opts || {}
+      opts.protocol = opts.protocol || 'http'
+      // console.log(opts.protocol)
+      var _h = http
+      if (opts.protocol && opts.protocol.indexOf('https') !== -1) _h = https
+      if (opts.protocol[opts.protocol.length - 1] !== ':') opts.protocol += ':'
+      var req = _h.request(opts, function (res) {
         var buffer = ''
         res.on('data', function (chunk) {
           buffer += chunk
@@ -130,6 +137,7 @@
     }
 
     var opts = {
+      protocol: params.protocol,
       hostname: params.hostname,
       port: params.port,
       path: params.path, // attach root path
