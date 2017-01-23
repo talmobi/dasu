@@ -34,6 +34,9 @@ Using XMLHttpRequest or Node's http libraries under the hood, **dasu** aims to s
 ## Why
 Test your client side request/fetch/xhr logic on the server side with the same api you're using on the client.
 
+## Alternatives
+https://github.com/visionmedia/superagent
+
 
 ## Install
 from npm
