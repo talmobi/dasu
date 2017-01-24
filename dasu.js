@@ -1,7 +1,7 @@
 // basic streamlined xhr request for browser and server
 
 var _request = function () {
-  throw new Error('No request implemention specified in dasu.js')
+  throw new Error('dasu: No request implemention specified in dasu.js')
 }
 
 if (typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefined') {
@@ -14,7 +14,25 @@ if (typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefined
     if (opts.protocol[opts.protocol.length - 1] !== ':') opts.protocol += ':'
     // opts.host = opts.host || window.location.host
     opts.hostname = opts.hostname || window.location.hostname
-    opts.port = opts.port || window.location.port
+
+    var defaultPort = 80
+
+    // default port based off of protocol
+    if (opts.protocol) {
+      if (opts.protocol.indexOf('https') !== -1) {
+        defaultPort = 443
+      } else {
+        defaultPort = 80
+      }
+    }
+
+    // if requesting current domain, assume by default the same port
+    var ohn = opts.hostname.toLowerCase().trim()
+    var whn = window.location.hostname.toLowerCase().trim()
+    if (ohn.indexOf(whn) !== -1) defaultPort = window.location.port || defaultPort
+
+    opts.port = opts.port || defaultPort
+
     var origin = opts.protocol + '//' + (opts.hostname + (opts.port ? (':' + opts.port) : ''))
     // XMLHttpRequest takes a complete url (not host and path separately)
     var url = origin + opts.path
@@ -57,7 +75,6 @@ if (typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefined
   _request = function (opts, dataString, callback) {
     opts = opts || {}
     opts.protocol = opts.protocol || 'http'
-    // console.log(opts.protocol)
     var _h = http
     if (opts.protocol && opts.protocol.indexOf('https') !== -1) _h = https
     if (opts.protocol[opts.protocol.length - 1] !== ':') opts.protocol += ':'
@@ -100,6 +117,13 @@ function request (params, done) {
       contentType = 'application/json'
       break
     case 'string':
+      if (data.length > 1 && (data[0] === '{' || data[0] === '[')) {
+        try { // could be json
+          var  _j = JSON.parse(data)
+          // if no error is thrown, json parsed successfully
+          if (console && console.warn) console.warn('dasu: Sending data that may be JSON as text/plain')
+        } catch (err) {} // text was not parsed as json, ignore and assume text/plain
+      }
       dataString = data
       contentType = 'text/plain'
       break

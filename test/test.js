@@ -88,6 +88,59 @@ test('test public ipify.org ip (returns your ip)', t => {
   })
 })
 
+test('test better default protocol (and port) if omitted', t => {
+  t.plan(3)
+
+  var params = {
+    path: '/',
+    hostname: 'api.ipify.org',
+    method: 'GET'
+  }
+
+  xhr(params, function (err, data) {
+    t.error(err, 'no xhr errors')
+    t.ok(data, 'data received')
+    var ip = data
+    t.equal(ip.split('.').filter(n => Number(n) >= 0).length, 4, 'ipv4 found as expected')
+  })
+})
+
+test('test better default port based on protocol if omitted', t => {
+  t.plan(3)
+
+  var params = {
+    path: '/',
+    hostname: 'api.ipify.org',
+    protocol: 'http',
+    method: 'GET'
+  }
+
+  xhr(params, function (err, data) {
+    t.error(err, 'no xhr errors')
+    t.ok(data, 'data received')
+    var ip = data
+    t.equal(ip.split('.').filter(n => Number(n) >= 0).length, 4, 'ipv4 found as expected')
+  })
+})
+
+test('test better default port based on protocol if omitted', t => {
+  t.plan(3)
+
+  var params = {
+    path: '/',
+    hostname: 'api.ipify.org',
+    protocol: 'https',
+    method: 'GET'
+  }
+
+  xhr(params, function (err, data) {
+    t.error(err, 'no xhr errors')
+    t.ok(data, 'data received')
+    var ip = data
+    t.equal(ip.split('.').filter(n => Number(n) >= 0).length, 4, 'ipv4 found as expected')
+  })
+})
+
 test('test public uinames.com api (returns a random person information)', t => {
   t.plan(6)
 
