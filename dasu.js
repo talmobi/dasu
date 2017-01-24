@@ -94,7 +94,7 @@ if (typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefined
       callback(err)
     })
 
-    // console.log("rest: sending: " + dataString)
+    // console.log('rest: sending: ' + dataString)
     req.write(dataString)
     req.end()
 
@@ -119,8 +119,7 @@ function request (params, done) {
     case 'string':
       if (data.length > 1 && (data[0] === '{' || data[0] === '[')) {
         try { // could be json
-          var  _j = JSON.parse(data)
-          // if no error is thrown, json parsed successfully
+          JSON.parse(data) // throws error on fail
           if (console && console.warn) console.warn('dasu: Sending data that may be JSON as text/plain')
         } catch (err) {} // text was not parsed as json, ignore and assume text/plain
       }
@@ -131,6 +130,7 @@ function request (params, done) {
       dataString = ('' + data)
       contentType = 'text/plain'
   }
+  // console.log('dataString: ' + dataString)
 
   // console.log("rest: contentType: " + contentType)
 

@@ -1,5 +1,10 @@
 var express = require('express')
+var bodyParser = require('body-parser')
+
 var app = express()
+
+app.use(bodyParser.json())
+app.use(bodyParser.text())
 
 var users = [
   { name: 'dave' },
@@ -20,6 +25,14 @@ app.use('/users', function (req, res, next) {
 
 app.use('/echo/:msg', function (req, res, next) {
   res.send(req.params.msg).end()
+})
+
+app.use('/text', function (req, res, next) {
+  res.send(req.body).end()
+})
+
+app.use('/json', function (req, res, next) {
+  res.json(req.body).end()
 })
 
 var server = require('http').createServer(app)

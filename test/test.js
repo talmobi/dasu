@@ -1,5 +1,5 @@
 var test = require('tape')
-var dasu = require('../dist/bundle.js')
+var dasu = require('../dist/bundle.min.js')
 var xhr = dasu.xhr || dasu
 var req = dasu.req
 var server = require('./server.js')
@@ -200,6 +200,71 @@ test('test response status code', { timeout: 2000 }, t => {
     t.error(err, 'no request errors ')
     t.equal(res.statusCode, res.status, 'res.statusCode (NodeJS) === res.status (XMLHttpRequest)')
     t.equal(res.statusCode, 200)
+  })
+})
+
+test('post text/plain', { timeout: 2000 }, t => {
+  t.plan(3)
+
+  var params = {
+    path: '/text',
+    hostname: '127.0.0.1',
+    port: PORT,
+    method: 'POST',
+    data: 'Dogs are the best!'
+  }
+
+  req(params, function (err, res, data) {
+    t.error(err, 'no request errors ')
+    t.equal(res.statusCode, 200)
+    t.equal(data, 'Dogs are the best!')
+  })
+})
+
+test('warning message on text/plain for data that is JSON parsable', { timeout: 2000 }, t => {
+  t.plan(4)
+
+  var params = {
+    path: '/text',
+    hostname: '127.0.0.1',
+    port: PORT,
+    method: 'POST',
+    data: '{ "name": "Ada" }'
+  }
+
+  var _warn = console.warn
+  var _ok = false
+  console.warn = function (text) {
+    if (text === 'dasu: Sending data that may be JSON as text/plain') {
+      _ok = true
+    }
+    _warn.call(arguments)
+  }
+
+  req(params, function (err, res, data) {
+    t.error(err, 'no request errors ')
+    t.equal(res.statusCode, 200)
+    t.equal(data, '{ "name": "Ada" }')
+    t.equal(_ok, true, 'warning message printed correctly.')
+    console.warn = _warn
+  })
+})
+
+test('post application/json', { timeout: 2000 }, t => {
+  t.plan(3)
+
+  var params = {
+    path: '/json',
+    hostname: '127.0.0.1',
+    port: PORT,
+    method: 'POST',
+    data: { message: 'Cats are OK.' }
+  }
+
+  req(params, function (err, res, data) {
+    t.error(err, 'no request errors ')
+    t.equal(res.statusCode, 200)
+    t.deepEqual(JSON.parse(data), { message: 'Cats are OK.' })
   })
 })
 
