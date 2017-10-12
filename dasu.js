@@ -13,7 +13,7 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
     opts.protocol = opts.protocol || ( window.location.protocol ) || 'http'
     if ( opts.protocol[ opts.protocol.length - 1 ] !== ':' ) opts.protocol += ':'
     // opts.host = opts.host || window.location.host
-    opts.hostname = opts.hostname || window.location.hostname
+    opts.hostname = opts.hostname || opts.host || window.location.hostname
 
     var defaultPort = 80
 
@@ -74,6 +74,7 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
 
   _request = function ( opts, dataString, callback ) {
     opts = opts || {}
+    opts.hostname = opts.hostname || opts.host // alias opts.host to opts.hostname
     opts.protocol = opts.protocol || 'http'
     var _h = http
     if ( opts.protocol && opts.protocol.indexOf( 'https' ) !== -1 ) _h = https
