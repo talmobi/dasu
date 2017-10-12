@@ -157,6 +157,7 @@ function request ( params, done ) {
 
   var opts = {
     protocol: params.protocol,
+    host: params.host,
     hostname: params.hostname,
     port: params.port,
     path: params.path, // attach root path
