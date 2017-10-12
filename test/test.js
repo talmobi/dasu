@@ -88,6 +88,47 @@ test('test public ipify.org ip (returns your ip)', t => {
   })
 })
 
+test('test params.host support ( alias to params.hostname )', t => {
+  t.plan(6)
+
+  var params1 = {
+    path: '/',
+    hostname: 'api.ipify.org',
+    protocol: 'https:',
+    port: 443,
+    method: 'GET'
+  }
+
+  var params2 = Object.assign( {}, params1 )
+
+  params2.host = params2.hostname
+  delete params2.hostname
+
+  var data1
+
+  xhr( params1, function ( err, data ) {
+    t.error(err, 'no xhr errors')
+    t.ok(data, 'data received')
+
+    data1 = data
+
+    xhr( params2, function ( err, data ) {
+      t.error(err, 'no xhr errors')
+      t.ok(data, 'data received')
+
+      data2 = data
+      t.equal(
+        data1,
+        data2,
+        'both requests results in the same data'
+      )
+
+      var ip = data
+      t.equal(ip.split('.').filter(n => Number(n) >= 0).length, 4, 'ipv4 found as expected')
+    } )
+  } )
+})
+
 test('test better default protocol (and port) if omitted', t => {
   t.plan(3)
 
