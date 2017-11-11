@@ -77,8 +77,10 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
     opts.hostname = opts.hostname || opts.host // alias opts.host to opts.hostname
     opts.protocol = opts.protocol || 'http'
     var _h = http
+
     if ( opts.protocol && opts.protocol.indexOf( 'https' ) !== -1 ) _h = https
     if ( opts.protocol[ opts.protocol.length - 1 ] !== ':' ) opts.protocol += ':'
+
     var req = _h.request( opts, function ( res ) {
       var buffer = ''
       res.on( 'data', function ( chunk ) {
@@ -91,7 +93,6 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
     } )
 
     req.on( 'error', function ( err ) {
-      // console.error("error: " + err)
       callback( err )
     } )
 
@@ -117,16 +118,20 @@ function request ( params, done ) {
       dataString = JSON.stringify( data )
       contentType = 'application/json'
       break
+
     case 'string':
       if ( data.length > 1 && ( data[ 0 ] === '{' || data[ 0 ] === '[' ) ) {
         try { // could be json
           JSON.parse( data ) // throws error on fail
-          if ( console && console.warn ) console.warn( 'dasu: Sending data that may be JSON as text/plain' )
+          if ( console && console.warn ) {
+            console.warn( 'dasu: Sending data that may be JSON as text/plain' )
+          }
         } catch ( err ) {} // text was not parsed as json, ignore and assume text/plain
       }
       dataString = data
       contentType = 'text/plain'
       break
+
     default: // try coercion as a last resort
       dataString = ( '' + data )
       contentType = 'text/plain'
