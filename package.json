@@ -4,11 +4,13 @@
   "description": "Consistent xhr API for both client and server (http.request)",
   "main": "dist/bundle.min.js",
   "scripts": {
-    "build": "rollup -f umd dasu.js > dist/bundle.js",
-    "uglify": "uglifyjs dist/bundle.js -cmo dist/bundle.min.js",
+    "build": "npm run build:js && npm run build:js:min",
+    "build:js": "rollup -f umd dasu.js > dist/bundle.js",
+    "build:js:min": "uglifyjs dist/bundle.js -cmo dist/bundle.min.js",
     "prepublish": "npm run lint && npm run build && npm test",
+    "passlint": "passlint dist/*.js",
     "lint": "spacestandard --fix dasu.js",
-    "test": "npm run lint && npm run build && npm run uglify && tape test/*test*.js | tap-spec"
+    "test": "npm run lint && npm run build && tape test/*test*.js | tap-spec && npm run passlint"
   },
   "repository": {
     "type": "git",
@@ -22,6 +24,7 @@
   "devDependencies": {
     "body-parser": "^1.16.0",
     "express": "^4.14.0",
+    "passlint": "0.0.13",
     "rollup": "^0.33.1",
     "spacestandard": "0.0.6",
     "tap-spec": "^4.1.1",
