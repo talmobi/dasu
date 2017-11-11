@@ -3,6 +3,9 @@
   "version": "0.0.21",
   "description": "Consistent xhr API for both client and server (http.request)",
   "main": "dist/bundle.min.js",
+  "files": [
+    "dist/bundle.min.js"
+  ],
   "scripts": {
     "build": "npm run build:js && npm run build:js:min",
     "build:js": "rollup -f umd dasu.js > dist/bundle.js",
