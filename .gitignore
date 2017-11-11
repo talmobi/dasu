@@ -2,3 +2,5 @@ node_modules
 *.log
 *.sw?
 *.DS_STORE
+
+dist/
