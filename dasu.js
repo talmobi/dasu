@@ -1,5 +1,7 @@
 // basic streamlined xhr request for browser and server
 
+var client = {}
+
 var _request = function () {
   throw new Error( 'dasu: No request implemention specified in dasu.js' )
 }
@@ -36,7 +38,11 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
     var origin = opts.protocol + '//' + ( opts.hostname + ( opts.port ? ( ':' + opts.port ) : '' ) )
     // XMLHttpRequest takes a complete url (not host and path separately)
     var url = origin + opts.path
-    console.log( 'dasu: url [' + url + ']' )
+
+    if ( client.debug ) {
+      console.log( 'dasu: url [' + url + ']' )
+    }
+
     req.open( opts.method, url, true )
 
     req.onload = function () {
@@ -197,13 +203,12 @@ function request ( params, done ) {
   } )
 }
 
-var client = {
-  xhr: function ( params, done ) {
-    request( params, function ( err, res, body ) {
-      done( err, body )
-    } )
-  },
-  req: request
+client.xhr = function ( params, done ) {
+  request( params, function ( err, res, body ) {
+    done( err, body )
+  } )
 }
+
+client.req = request
 
 module.exports = client
