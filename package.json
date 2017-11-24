@@ -13,7 +13,7 @@
     "prepublish": "npm run lint && npm run build && npm test",
     "passlint": "passlint dist/*.js",
     "lint": "spacestandard --fix dasu.js",
-    "test": "npm run lint && npm run build && tape test/*test*.js | tap-spec && npm run passlint"
+    "test": "npm run lint && npm run build && tape test/*test*.js | faucet && npm run passlint"
   },
   "repository": {
     "type": "git",
@@ -27,10 +27,10 @@
   "devDependencies": {
     "body-parser": "~1.16.0",
     "express": "~4.14.0",
+    "faucet": "0.0.1",
     "passlint": "0.0.13",
     "rollup": "~0.33.1",
     "spacestandard": "0.0.6",
-    "tap-spec": "~4.1.1",
     "tape": "~4.6.0",
     "uglify-js": "~2.7.5"
   }
