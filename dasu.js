@@ -50,7 +50,24 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
     }
 
     req.onerror = function () {
-      callback( req.responseText || 'dasu.js XMLHttpRequest error' )
+      var desc = '' + opts.method.toUpperCase() + ' ' + url
+
+      var err = {
+        name: 'NetworkError',
+        message: req.responseText || 'NetworkError: XMLHttpRequest (' + desc + ')',
+        desc: desc,
+        url: url,
+        opts: opts,
+        data: dataString,
+        origin: origin,
+        responseText: req.responseText
+      }
+
+      err.toString = function () {
+        return err.message + '\n' + JSON.stringify( opts ).split( ',' ).join( ',\n' )
+      }
+
+      callback( err )
     }
 
     // attach headers to the request
@@ -62,7 +79,12 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
       req.setRequestHeader( key, value )
       // console.log("set header: %s, to: %s", key, value)
     }
-    req.send( dataString )
+
+    try {
+      req.send( dataString )
+    } catch ( err ) {
+      callback( err )
+    }
 
     // return minimal api to abort
     return {
@@ -130,7 +152,9 @@ function request ( params, done ) {
         try { // could be json
           JSON.parse( data ) // throws error on fail
           if ( console && console.warn ) {
-            console.warn( 'dasu: Sending data that may be JSON as text/plain' )
+            console.warn( '[WARNING] dasu: Sending data that may be JSON as text/plain' )
+          } else {
+            console.log( '[WARNING] dasu: Sending data that may be JSON as text/plain' )
           }
         } catch ( err ) {} // text was not parsed as json, ignore and assume text/plain
       }
