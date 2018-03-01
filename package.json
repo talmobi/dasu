@@ -2,14 +2,14 @@
   "name": "dasu",
   "version": "0.0.22",
   "description": "Consistent xhr API for both client and server (http.request)",
-  "main": "dist/bundle.min.js",
+  "main": "dist/dasu.min.js",
   "files": [
-    "dist/bundle.min.js"
+    "dist/dasu.min.js"
   ],
   "scripts": {
     "build": "npm run build:js && npm run build:js:min",
-    "build:js": "rollup -f umd dasu.js > dist/bundle.js",
-    "build:js:min": "uglifyjs dist/bundle.js -cmo dist/bundle.min.js",
+    "build:js": "rollup -f umd dasu.js > dist/dasu.js",
+    "build:js:min": "uglifyjs dist/dasu.js -cmo dist/dasu.min.js",
     "prepublish": "npm run lint && npm run build && npm test",
     "passlint": "passlint dist/*.js",
     "lint": "spacestandard --fix dasu.js",
