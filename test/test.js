@@ -1,5 +1,5 @@
 var test = require('tape')
-var dasu = require('../dist/bundle.min.js')
+var dasu = require('../dist/dasu.min.js')
 var xhr = dasu.xhr || dasu
 var req = dasu.req
 var server = require('./server.js')
@@ -276,7 +276,7 @@ test('warning message on text/plain for data that is JSON parsable', { timeout: 
   var _warn = console.warn
   var _ok = false
   console.warn = function (text) {
-    if (text === 'dasu: Sending data that may be JSON as text/plain') {
+    if (text === '[WARNING] dasu: Sending data that may be JSON as text/plain') {
       _ok = true
     }
     _warn.call(arguments)
