@@ -163,7 +163,7 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
 
 
     if ( client.debug ) {
-      console.log( 'dasu typeof dataString: typeof dataString' )
+      console.log( 'dasu typeof dataString: ' + typeof dataString )
       dataString && dataString.length >= 0 && console.log( 'dasu sending length: ' + dataString.length )
     }
 
