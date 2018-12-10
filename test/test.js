@@ -4,6 +4,9 @@ var xhr = dasu.xhr || dasu
 var req = dasu.req
 var server = require('./server.js')
 
+var fs = require( 'fs' )
+var path = require( 'path' )
+
 test('sample test', t => {
   t.plan(1)
   t.ok(true, 'always true')
@@ -365,4 +368,39 @@ test('close local mockup test server', t => {
       })
     }, 1000)
   })
+})
+
+test.only('test image ( dragonite.gif ) upload to imgur.com', { timeout: 10 * 1000 }, t => {
+  t.plan(6)
+
+  // please register your own Client-ID: https://api.imgur.com/oauth2/addclient
+  const clientId = 'fe2bfbb4a6254bd' // imgur app Client-ID
+
+  const data = fs.readFileSync( path.join( 'test', 'dragonite.gif' ) )
+
+  const params = {
+    protocol: 'https',
+    hostname: 'api.imgur.com',
+    port: 443,
+    path: '/3/image',
+    method: 'POST',
+    headers: {
+      authorization: 'Client-ID ' + clientId
+    },
+    data: data
+  }
+
+  dasu.req( params, function ( err, res, data ) {
+    if ( err ) throw err
+
+    t.equal( res.status, 200, 'status code OK' )
+
+    const json = JSON.parse( data )
+
+    t.equal( json.data.width, 32, 'width OK' )
+    t.equal( json.data.height, 32, 'height OK' )
+    t.equal( json.data.animated, true, 'animated flag OK' )
+    t.equal( json.data.size, 17685, 'size OK' )
+    t.ok( json.data.link.length > 3, 'link OK' )
+  } )
 })
