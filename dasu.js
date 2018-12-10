@@ -161,7 +161,6 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
       callback( err )
     } )
 
-
     if ( client.debug ) {
       console.log( 'dasu typeof dataString: ' + typeof dataString )
       dataString && dataString.length >= 0 && console.log( 'dasu sending length: ' + dataString.length )
@@ -278,7 +277,6 @@ function request ( params, done ) {
     method: params.method,
     headers: params.headers
   }
-
 
   // used XMLHttpRequest if availalb, else nodejs http library
   return _request( opts, dataString, function ( err, res, body ) {
