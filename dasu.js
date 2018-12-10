@@ -161,7 +161,12 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
       callback( err )
     } )
 
-    // console.log('rest: sending: ' + dataString)
+
+    if ( client.debug ) {
+      console.log( 'dasu typeof dataString: typeof dataString' )
+      dataString && dataString.length >= 0 && console.log( 'dasu sending length: ' + dataString.length )
+    }
+
     req.write( dataString )
     req.end()
 
