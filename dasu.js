@@ -235,6 +235,30 @@ function request ( params, done ) {
     params.path = '/' + params.path
   }
 
+  /*
+   * set default protocl based off of port number
+   */
+  var defaultProtocol = 'http'
+
+  if ( params.port ) {
+    var n = Number( params.port )
+
+    // convert params.port to a Number
+    if ( String( n ) === params.port ) {
+      params.port = n
+    }
+
+    if ( params.port === 443 ) {
+      defaultProtocol = 'https'
+    }
+  }
+
+  if ( !params.protocol ) {
+    params.protocol = defaultProtocol
+  }
+
+  // delete params.protocol // TODO debug delete this
+
   var opts = {
     protocol: params.protocol,
     host: params.host,
