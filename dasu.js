@@ -189,6 +189,12 @@ function request ( params, done ) {
       if ( data.toString === ( {} ).toString ) {
         dataString = JSON.stringify( data )
         contentType = 'application/json'
+      } else {
+        if ( client.debug ) {
+          console.log( 'dasu: complex object data' )
+        }
+        dataString = data
+        contentType = 'application/octet-stream'
       }
       break
 
