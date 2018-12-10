@@ -370,7 +370,7 @@ test('close local mockup test server', t => {
   })
 })
 
-test.only('test image ( dragonite.gif ) upload to imgur.com', { timeout: 10 * 1000 }, t => {
+test.only('test image ( dragonite.gif ) upload to imgur.com', { timeout: 25 * 1000 }, t => {
   t.plan(6)
 
   // please register your own Client-ID: https://api.imgur.com/oauth2/addclient
