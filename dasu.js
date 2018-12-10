@@ -64,8 +64,10 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
       }
 
       err.toString = function () {
-        return err.message + '\n' + JSON.stringify( opts ).split( ',' ).join( ',\n' )
+        return err.message + '\n' + JSON.stringify( opts, null, 2 ).split( ',' )
       }
+
+      err.message = err.toString()
 
       callback( err )
     }
@@ -83,6 +85,18 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
     try {
       req.send( dataString )
     } catch ( err ) {
+      var desc = '' + opts.method.toUpperCase() + ' ' + url
+
+      err.desc = desc
+      err.url = url
+      err.opts = opts
+      err.data = dataString
+      err.origin = origin
+
+      err.toString = function () {
+        return err.message + '\n' + JSON.stringify( opts, null, 2 ).split( ',' )
+      }
+
       callback( err )
     }
 
@@ -127,6 +141,23 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
     } )
 
     req.on( 'error', function ( err ) {
+      var origin = opts.protocol + '//' + ( opts.hostname + ( opts.port ? ( ':' + opts.port ) : '' ) )
+      var url = origin + opts.path
+
+      var desc = '' + opts.method.toUpperCase() + ' ' + url
+
+      err.desc = desc
+      err.url = url
+      err.opts = opts
+      err.data = dataString
+      err.origin = origin
+
+      err.toString = function () {
+        return err.message + '\n' + JSON.stringify( opts, null, 2 ).split( ',' )
+      }
+
+      err.message = err.toString()
+
       callback( err )
     } )
 
