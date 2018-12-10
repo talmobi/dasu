@@ -149,8 +149,11 @@ function request ( params, done ) {
   var dataString = ''
   switch ( typeof data ) {
     case 'object':
-      dataString = JSON.stringify( data )
-      contentType = 'application/json'
+      // make sure we only convert simple objects and not for example Buffer objects
+      if ( data.toString === ( {} ).toString ) {
+        dataString = JSON.stringify( data )
+        contentType = 'application/json'
+      }
       break
 
     case 'string':
