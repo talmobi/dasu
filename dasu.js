@@ -225,9 +225,13 @@ function request ( params, done ) {
   delete params.data
 
   // try to add content-type if it doesn't exist
-  params.headers = Object.assign( {}, {
-    'content-type': contentType
-  }, params.headers || {} )
+  if ( contentType ) {
+    params.headers = Object.assign( {}, {
+      'content-type': contentType
+    }, params.headers || {} )
+  }
+
+  // delete params.headers[ 'content-type' ]
 
   // console.log("rest: headers: " + JSON.stringify(params.headers))
 
