@@ -13,6 +13,7 @@
     "prepublish": "npm run lint && npm run build && npm test",
     "passlint": "passlint dist/*.js",
     "lint": "spacestandard --fix dasu.js",
+    "test:only": "tape test/*test*.js",
     "test": "npm run lint && npm run build && tape test/*test*.js | faucet && npm run passlint"
   },
   "repository": {
