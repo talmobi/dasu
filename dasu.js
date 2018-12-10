@@ -109,6 +109,12 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
     if ( opts.protocol && opts.protocol.indexOf( 'https' ) !== -1 ) _h = https
     if ( opts.protocol[ opts.protocol.length - 1 ] !== ':' ) opts.protocol += ':'
 
+    if ( client.debug ) {
+      console.log( '--- dasu opts opts ---' )
+      console.log( opts )
+      console.log()
+    }
+
     var req = _h.request( opts, function ( res ) {
       var buffer = ''
       res.on( 'data', function ( chunk ) {
@@ -199,6 +205,7 @@ function request ( params, done ) {
     method: params.method,
     headers: params.headers
   }
+
 
   // used XMLHttpRequest if availalb, else nodejs http library
   return _request( opts, dataString, function ( err, res, body ) {
