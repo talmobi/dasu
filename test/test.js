@@ -374,7 +374,7 @@ test.only('test image ( dragonite.gif ) upload to imgur.com', { timeout: 25 * 10
   t.plan(6)
 
   // please register your own Client-ID: https://api.imgur.com/oauth2/addclient
-  const clientId = 'fe2bfbb4a6254bd' // imgur app Client-ID
+  const clientId = '279f0e248e5f16c' // imgur app Client-ID
 
   const data = fs.readFileSync( path.join( 'test', 'dragonite.gif' ) )
 
