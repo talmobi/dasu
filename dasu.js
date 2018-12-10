@@ -110,7 +110,7 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
     if ( opts.protocol[ opts.protocol.length - 1 ] !== ':' ) opts.protocol += ':'
 
     if ( client.debug ) {
-      console.log( '--- dasu opts opts ---' )
+      console.log( '--- dasu opts ---' )
       console.log( opts )
       console.log()
     }
