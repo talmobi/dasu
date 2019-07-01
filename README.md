@@ -1,3 +1,7 @@
+[![npm](https://img.shields.io/npm/v/dasu.svg?maxAge=3600)](https://www.npmjs.com/package/dasu)
+[![npm](https://img.shields.io/npm/dm/dasu.svg?maxAge=3600)](https://www.npmjs.com/package/dasu)
+[![npm](https://img.shields.io/npm/l/dasu.svg?maxAge=3600)](https://www.npmjs.com/package/dasu)
+
 # 出す　ー　dasu
 ## The same xhr API for both client and server
 
