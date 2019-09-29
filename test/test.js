@@ -385,7 +385,9 @@ test('test image ( dragonite.gif ) upload to imgur.com', { timeout: 25 * 1000 },
     path: '/3/image',
     method: 'POST',
     headers: {
-      authorization: 'Client-ID ' + clientId
+      authorization: 'Client-ID ' + clientId,
+      // 'content-type': 'application/octet-stream',
+      // 'content-length': data.length
     },
     data: data
   }
