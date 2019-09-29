@@ -228,6 +228,13 @@ function request ( params, done ) {
     params.headers = Object.assign( {}, {
       'content-type': contentType
     }, params.headers || {} )
+
+    // set content-length if it doesn't already exist
+    if ( contentType === 'application/octet-stream' && dataString && dataString.length ) {
+      params.headers = Object.assign( {}, {
+        'content-length': dataString.length
+      }, params.headers || {} )
+    }
   }
 
   // delete params.headers[ 'content-type' ]
