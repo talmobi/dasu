@@ -76,7 +76,7 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
     // console.log(opts.headers)
     var headerKeys = Object.keys( opts.headers )
     for ( var i = 0; i < headerKeys.length; i++ ) {
-      var key = headerKeys[ i ]
+      var key = headerKeys[ i ].toLowerCase()
       var value = opts.headers[ key ]
       req.setRequestHeader( key, value )
       // console.log("set header: %s, to: %s", key, value)
