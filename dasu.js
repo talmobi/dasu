@@ -113,6 +113,7 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
   var require_ = require
   var http = require_( 'http' )
   var https = require_( 'https' )
+  var zlib = require_( 'zlib' )
 
   _request = function ( opts, dataString, callback ) {
     opts = opts || {}
@@ -130,13 +131,36 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
     }
 
     var req = _h.request( opts, function ( res ) {
-      var buffer = ''
-      res.on( 'data', function ( chunk ) {
-        buffer += chunk
+      var buffer = []
+      var stream = res
+
+      // brotli support
+      if ( zlib.createBrotliDecompress && res.headers[ 'content-encoding' ] === 'br' ) {
+        var bunzip = zlib.createBrotliDecompress()
+        stream = bunzip
+        res.pipe( bunzip )
+      }
+
+      // gzip support
+      if ( zlib.createGunzip && res.headers[ 'content-encoding' ] === 'gzip' ) {
+        var gunzip = zlib.createGunzip()
+        stream = gunzip
+        res.pipe( gunzip )
+      }
+
+      // deflate support
+      if ( zlib.createDeflate && res.headers[ 'content-encoding' ] === 'deflate' ) {
+        var deflate = zlib.createDeflate()
+        stream = deflate
+        res.pipe( deflate )
+      }
+
+      stream.on( 'data', function ( chunk ) {
+        buffer.push( chunk )
       } )
 
-      res.on( 'end', function () {
-        callback( null, res, buffer )
+      stream.on( 'end', function () {
+        callback( null, res, buffer.join( '' ) )
       } )
     } )
 
