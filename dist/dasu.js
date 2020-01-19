@@ -166,7 +166,9 @@
         } )
 
         stream.on( 'end', function () {
-          callback( null, res, buffer.join( '' ) )
+          const body = buffer.join( '' )
+          res.responseText = res.responseText || body
+          callback( null, res, body )
         } )
       } )
 
