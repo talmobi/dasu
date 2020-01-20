@@ -311,7 +311,7 @@ function request ( params, done ) {
     headers: params.headers
   }
 
-  // used XMLHttpRequest if availalb, else nodejs http library
+  // uses XMLHttpRequest if available, else nodejs http/https library
   return _request( opts, dataString, function ( err, res, body ) {
     if ( err || res === undefined ) {
       done( err )
