@@ -325,6 +325,11 @@ function request ( params, done ) {
       if ( res.getAllResponseHeaders && !res.headers ) {
         res.headers = res.getAllResponseHeaders()
       }
+      if ( !res.getAllResponseHeaders && res.headers ) {
+        res.getAllResponseHeaders = function () {
+          return res.headers
+        }
+      }
 
       // homogenize response status
       if ( res.status === undefined ) {
