@@ -1,6 +1,8 @@
 // basic streamlined xhr request for browser and server
 
-var client = {}
+var client = {
+  follow: true // auto-follow redirects
+}
 
 var _request = function () {
   throw new Error( 'dasu: No request implemention specified in dasu.js' )
@@ -10,6 +12,8 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
   // use XMLHttpRequest
 
   _request = function ( opts, dataString, callback ) {
+    client._mode = 'browser'
+
     var req = new window.XMLHttpRequest()
 
     opts.protocol = opts.protocol || ( window.location.protocol ) || 'http'
@@ -114,6 +118,7 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
   var http = require_( 'http' )
   var https = require_( 'https' )
   var zlib = require_( 'zlib' )
+  client._mode = 'node'
 
   _request = function ( opts, dataString, callback ) {
     opts = opts || {}
@@ -311,8 +316,13 @@ function request ( params, done ) {
     headers: params.headers
   }
 
+  var redirectCount = 0
+  var REDIRECT_LIMIT = 3
+
   // uses XMLHttpRequest if available, else nodejs http/https library
-  return _request( opts, dataString, function ( err, res, body ) {
+  return _request( opts, dataString, reqCallback )
+
+  function reqCallback ( err, res, body ) {
     if ( err || res === undefined ) {
       done( err )
     } else {
@@ -338,9 +348,36 @@ function request ( params, done ) {
         res.statusCode = res.status
       }
 
+      if (
+        client.follow &&
+        res.status >= 300 && res.status < 400 &&
+        res.headers[ 'location' ] &&
+        ( redirectCount < REDIRECT_LIMIT )
+      ) {
+        redirectCount++
+
+        var parsedUrl
+        if ( typeof URL !== 'undefined' ) {
+          parsedUrl = new URL( res.headers[ 'location' ] )
+        } else {
+          if ( client._mode === 'node' ) {
+            parsedUrl = require_( 'url' ).parse( res.headers[ 'location' ] )
+          }
+        }
+
+        if ( parsedUrl ) {
+          opts.protocol = parsedUrl.protocol && parsedUrl.protocol
+          opts.host = parsedUrl.host && parsedUrl.host
+          opts.hostname = parsedUrl.hostname && parsedUrl.hostname
+          opts.port = parsedUrl.port && parsedUrl.port
+          opts.path = parsedUrl.path && parsedUrl.path
+          return _request( opts, dataString, reqCallback )
+        }
+      }
+
       done( undefined, res, body )
     }
-  } )
+  }
 }
 
 client.xhr = function ( params, done ) {
