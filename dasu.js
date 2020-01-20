@@ -160,7 +160,7 @@ if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefine
       } )
 
       stream.on( 'end', function () {
-        const body = buffer.join( '' )
+        var body = buffer.join( '' )
         res.responseText = res.responseText || body
         callback( null, res, body )
       } )
