@@ -357,7 +357,7 @@ function request ( params, done ) {
         redirectCount++
 
         var loc = res.headers[ 'location' ]
-        if ( loc.slice( 0, 2 ) == '//' ) {
+        if ( loc.slice( 0, 2 ) === '//' ) {
           loc = params.protocol + ':' + loc
         }
         if ( loc[ 0 ] === '/' ) {
