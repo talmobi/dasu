@@ -1,215 +1,231 @@
 // basic streamlined xhr request for browser and server
 
 var client = {
-  follow: true // auto-follow redirects
+  follow: true, // auto-follow redirects
+  mode: 'auto' // possible values: 'auto', 'node', 'browser'
 }
 
 var _request = function () {
-  throw new Error( 'dasu: No request implemention specified in dasu.js' )
+  throw new Error( 'dasu: no _request implementation found!' )
 }
 
 if ( typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefined' ) {
   // use XMLHttpRequest
+}
 
-  _request = function ( opts, dataString, callback ) {
-    client._mode = 'browser'
+function browserRequest ( opts, dataString, callback ) {
+  client._mode = 'browser'
 
-    var req = new window.XMLHttpRequest()
+  var req = new window.XMLHttpRequest()
 
-    opts.protocol = opts.protocol || ( window.location.protocol ) || 'http'
-    if ( opts.protocol[ opts.protocol.length - 1 ] !== ':' ) opts.protocol += ':'
-    // opts.host = opts.host || window.location.host
-    opts.hostname = opts.hostname || opts.host || window.location.hostname
+  opts.protocol = opts.protocol || ( window.location.protocol ) || 'http'
+  if ( opts.protocol[ opts.protocol.length - 1 ] !== ':' ) opts.protocol += ':'
+  // opts.host = opts.host || window.location.host
+  opts.hostname = opts.hostname || opts.host || window.location.hostname
 
-    var defaultPort = 80
+  var defaultPort = 80
 
-    // default port based off of protocol
-    if ( opts.protocol ) {
-      if ( opts.protocol.indexOf( 'https' ) !== -1 ) {
-        defaultPort = 443
-      } else {
-        defaultPort = 80
-      }
-    }
-
-    // if requesting current domain, assume by default the same port
-    var ohn = opts.hostname.toLowerCase().trim()
-    var whn = window.location.hostname.toLowerCase().trim()
-    if ( ohn.indexOf( whn ) !== -1 ) defaultPort = window.location.port || defaultPort
-
-    opts.port = opts.port || defaultPort
-
-    var origin = opts.protocol + '//' + ( opts.hostname + ( opts.port ? ( ':' + opts.port ) : '' ) )
-    // XMLHttpRequest takes a complete url (not host and path separately)
-    var url = origin + opts.path
-
-    if ( client.debug ) {
-      console.log( 'dasu: url [' + url + ']' )
-    }
-
-    req.open( opts.method, url, true )
-
-    req.onload = function () {
-      callback( null, req, req.responseText )
-    }
-
-    req.onerror = function () {
-      var desc = '' + opts.method.toUpperCase() + ' ' + url
-
-      var err = {
-        name: 'NetworkError',
-        message: req.responseText || 'NetworkError: XMLHttpRequest (' + desc + ')',
-        desc: desc,
-        url: url,
-        opts: opts,
-        data: dataString,
-        origin: origin,
-        responseText: req.responseText
-      }
-
-      err.toString = function () {
-        return err.message + '\n' + JSON.stringify( opts, null, 2 ).split( ',' )
-      }
-
-      err.message = err.toString()
-
-      callback( err )
-    }
-
-    // attach headers to the request
-    // console.log(opts.headers)
-    var headerKeys = Object.keys( opts.headers )
-    for ( var i = 0; i < headerKeys.length; i++ ) {
-      var key = headerKeys[ i ].toLowerCase()
-      var value = opts.headers[ key ]
-      req.setRequestHeader( key, value )
-      // console.log("set header: %s, to: %s", key, value)
-    }
-
-    try {
-      req.send( dataString )
-    } catch ( err ) {
-      var desc = '' + opts.method.toUpperCase() + ' ' + url
-
-      err.desc = desc
-      err.url = url
-      err.opts = opts
-      err.data = dataString
-      err.origin = origin
-
-      err.toString = function () {
-        return err.message + '\n' + JSON.stringify( opts, null, 2 ).split( ',' )
-      }
-
-      callback( err )
-    }
-
-    // return minimal api to abort
-    return {
-      abort: function () {
-        req.abort()
-      }
+  // default port based off of protocol
+  if ( opts.protocol ) {
+    if ( opts.protocol.indexOf( 'https' ) !== -1 ) {
+      defaultPort = 443
+    } else {
+      defaultPort = 80
     }
   }
-} else { // assume in nodejs environment, use nodejs core http lib
+
+  // if requesting current domain, assume by default the same port
+  var ohn = opts.hostname.toLowerCase().trim()
+  var whn = window.location.hostname.toLowerCase().trim()
+  if ( ohn.indexOf( whn ) !== -1 ) defaultPort = window.location.port || defaultPort
+
+  opts.port = opts.port || defaultPort
+
+  var origin = opts.protocol + '//' + ( opts.hostname + ( opts.port ? ( ':' + opts.port ) : '' ) )
+  // XMLHttpRequest takes a complete url (not host and path separately)
+  var url = origin + opts.path
+
+  if ( client.debug ) {
+    console.log( 'dasu: url [' + url + ']' )
+  }
+
+  req.open( opts.method, url, true )
+
+  req.onload = function () {
+    callback( null, req, req.responseText )
+  }
+
+  req.onerror = function () {
+    var desc = '' + opts.method.toUpperCase() + ' ' + url
+
+    var err = {
+      name: 'NetworkError',
+      message: req.responseText || 'NetworkError: XMLHttpRequest (' + desc + ')',
+      desc: desc,
+      url: url,
+      opts: opts,
+      data: dataString,
+      origin: origin,
+      responseText: req.responseText
+    }
+
+    err.toString = function () {
+      return err.message + '\n' + JSON.stringify( opts, null, 2 ).split( ',' )
+    }
+
+    err.message = err.toString()
+
+    callback( err )
+  }
+
+  // attach headers to the request
+  // console.log(opts.headers)
+  var headerKeys = Object.keys( opts.headers )
+  for ( var i = 0; i < headerKeys.length; i++ ) {
+    var key = headerKeys[ i ].toLowerCase()
+    var value = opts.headers[ key ]
+    req.setRequestHeader( key, value )
+    // console.log("set header: %s, to: %s", key, value)
+  }
+
+  try {
+    req.send( dataString )
+  } catch ( err ) {
+    var desc = '' + opts.method.toUpperCase() + ' ' + url
+
+    err.desc = desc
+    err.url = url
+    err.opts = opts
+    err.data = dataString
+    err.origin = origin
+
+    err.toString = function () {
+      return err.message + '\n' + JSON.stringify( opts, null, 2 ).split( ',' )
+    }
+
+    callback( err )
+  }
+
+  // return minimal api to abort
+  return {
+    abort: function () {
+      req.abort()
+    }
+  }
+}
+
+function nodeRequest ( opts, dataString, callback ) {
+  client._mode = 'node'
+
+  // assume in nodejs environment, use nodejs core http lib
   // use this require hack so that bundlers don't automatically bundle
   // node's http library within exported bundles
   var require_ = require
   var http = require_( 'http' )
   var https = require_( 'https' )
   var zlib = require_( 'zlib' )
-  client._mode = 'node'
 
-  _request = function ( opts, dataString, callback ) {
-    opts = opts || {}
-    opts.hostname = opts.hostname || opts.host // alias opts.host to opts.hostname
-    opts.protocol = opts.protocol || 'http'
-    var _h = http
+  opts = opts || {}
+  opts.hostname = opts.hostname || opts.host // alias opts.host to opts.hostname
+  opts.protocol = opts.protocol || 'http'
+  var _h = http
 
-    if ( opts.protocol && opts.protocol.indexOf( 'https' ) !== -1 ) _h = https
-    if ( opts.protocol[ opts.protocol.length - 1 ] !== ':' ) opts.protocol += ':'
+  if ( opts.protocol && opts.protocol.indexOf( 'https' ) !== -1 ) _h = https
+  if ( opts.protocol[ opts.protocol.length - 1 ] !== ':' ) opts.protocol += ':'
 
-    if ( client.debug ) {
-      console.log( '--- dasu opts ---' )
-      console.log( opts )
-      console.log()
+  if ( client.debug ) {
+    console.log( '--- dasu opts ---' )
+    console.log( opts )
+    console.log()
+  }
+
+  var req = _h.request( opts, function ( res ) {
+    var buffer = []
+    var stream = res
+
+    // brotli support
+    if ( zlib.createBrotliDecompress && res.headers[ 'content-encoding' ] === 'br' ) {
+      var bunzip = zlib.createBrotliDecompress()
+      stream = bunzip
+      res.pipe( bunzip )
     }
 
-    var req = _h.request( opts, function ( res ) {
-      var buffer = []
-      var stream = res
-
-      // brotli support
-      if ( zlib.createBrotliDecompress && res.headers[ 'content-encoding' ] === 'br' ) {
-        var bunzip = zlib.createBrotliDecompress()
-        stream = bunzip
-        res.pipe( bunzip )
-      }
-
-      // gzip support
-      if ( zlib.createGunzip && res.headers[ 'content-encoding' ] === 'gzip' ) {
-        var gunzip = zlib.createGunzip()
-        stream = gunzip
-        res.pipe( gunzip )
-      }
-
-      // deflate support
-      if ( zlib.createDeflate && res.headers[ 'content-encoding' ] === 'deflate' ) {
-        var deflate = zlib.createDeflate()
-        stream = deflate
-        res.pipe( deflate )
-      }
-
-      stream.on( 'data', function ( chunk ) {
-        buffer.push( chunk )
-      } )
-
-      stream.on( 'end', function () {
-        var body = buffer.join( '' )
-        res.responseText = res.responseText || body
-        callback( null, res, body )
-      } )
-    } )
-
-    req.on( 'error', function ( err ) {
-      var origin = opts.protocol + '//' + ( opts.hostname + ( opts.port ? ( ':' + opts.port ) : '' ) )
-      var url = origin + opts.path
-
-      var desc = '' + opts.method.toUpperCase() + ' ' + url
-
-      err.desc = desc
-      err.url = url
-      err.opts = opts
-      err.data = dataString
-      err.origin = origin
-
-      err.toString = function () {
-        return err.message + '\n' + JSON.stringify( opts, null, 2 ).split( ',' )
-      }
-
-      err.message = err.toString()
-
-      callback( err )
-    } )
-
-    if ( client.debug ) {
-      console.log( 'dasu typeof dataString: ' + typeof dataString )
-      dataString && dataString.length >= 0 && console.log( 'dasu sending length: ' + dataString.length )
+    // gzip support
+    if ( zlib.createGunzip && res.headers[ 'content-encoding' ] === 'gzip' ) {
+      var gunzip = zlib.createGunzip()
+      stream = gunzip
+      res.pipe( gunzip )
     }
 
-    req.write( dataString )
-    req.end()
+    // deflate support
+    if ( zlib.createDeflate && res.headers[ 'content-encoding' ] === 'deflate' ) {
+      var deflate = zlib.createDeflate()
+      stream = deflate
+      res.pipe( deflate )
+    }
 
-    // return minimal api to abort
-    return {
-      abort: function () {
-        req.abort()
-      }
+    stream.on( 'data', function ( chunk ) {
+      buffer.push( chunk )
+    } )
+
+    stream.on( 'end', function () {
+      var body = buffer.join( '' )
+      res.responseText = res.responseText || body
+      callback( null, res, body )
+    } )
+  } )
+
+  req.on( 'error', function ( err ) {
+    var origin = opts.protocol + '//' + ( opts.hostname + ( opts.port ? ( ':' + opts.port ) : '' ) )
+    var url = origin + opts.path
+
+    var desc = '' + opts.method.toUpperCase() + ' ' + url
+
+    err.desc = desc
+    err.url = url
+    err.opts = opts
+    err.data = dataString
+    err.origin = origin
+
+    err.toString = function () {
+      return err.message + '\n' + JSON.stringify( opts, null, 2 ).split( ',' )
+    }
+
+    err.message = err.toString()
+
+    callback( err )
+  } )
+
+  if ( client.debug ) {
+    console.log( 'dasu typeof dataString: ' + typeof dataString )
+    dataString && dataString.length >= 0 && console.log( 'dasu sending length: ' + dataString.length )
+  }
+
+  req.write( dataString )
+  req.end()
+
+  // return minimal api to abort
+  return {
+    abort: function () {
+      req.abort()
     }
   }
 }
 
 function request ( params, done ) {
+  var _currentMode
+
+  if (
+    ( client.mode === 'browser' ) ||
+    ( client.mode !== 'node' && typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefined' )
+  ) {
+    _currentMode = 'browser'
+    _request = browserRequest
+  } else {
+    _currentMode = 'node'
+    _request = nodeRequest
+  }
+
   var contentType = ''
   var data = ( params.data || params.json ) || ''
   var dataString = ''
@@ -370,7 +386,8 @@ function request ( params, done ) {
         if ( typeof URL !== 'undefined' ) {
           parsedUrl = new URL( loc )
         } else {
-          if ( client._mode === 'node' ) {
+          if ( _currentMode === 'node' ) {
+            var require_ = require
             parsedUrl = require_( 'url' ).parse( loc )
           }
         }
