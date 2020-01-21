@@ -356,12 +356,22 @@ function request ( params, done ) {
       ) {
         redirectCount++
 
+        var loc = res.headers[ 'location' ]
+        if ( loc.slice( 0, 2 ) == '//' ) {
+          loc = params.protocol + ':' + loc
+        }
+        if ( loc[ 0 ] === '/' ) {
+          // path only
+          opts.path = loc
+          return _request( opts, dataString, reqCallback )
+        }
+
         var parsedUrl
         if ( typeof URL !== 'undefined' ) {
-          parsedUrl = new URL( res.headers[ 'location' ] )
+          parsedUrl = new URL( loc )
         } else {
           if ( client._mode === 'node' ) {
-            parsedUrl = require_( 'url' ).parse( res.headers[ 'location' ] )
+            parsedUrl = require_( 'url' ).parse( loc )
           }
         }
 
