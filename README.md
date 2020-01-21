@@ -26,6 +26,14 @@ req(params, function (err, res, data) {
   console.log(json)
   // eg: {"name":"Milica","surname":"Maslo","gender":"female","region":"Slovakia"}
 })
+
+
+// turn auto-follow redirects off
+dasu.follow = false
+
+// force mode 'node', 'browser', 'auto'
+// (useful with Electron etc)
+dasu.mode = 'auto' // uses window.XMLHttpRequest if available
 ```
 
 ## Test in browser
