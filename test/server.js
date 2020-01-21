@@ -35,5 +35,14 @@ app.use('/json', function (req, res, next) {
   res.json(req.body).end()
 })
 
+app.get('/redirect', function (req, res, next) {
+  res.redirect(301, '/redirect-target')
+})
+
+app.get('/redirect-target', function(req, res, next) {
+  res.status(200)
+  res.end('REDIRECT')
+})
+
 var server = require('http').createServer(app)
 module.exports = server

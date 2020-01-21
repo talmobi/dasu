@@ -347,6 +347,44 @@ test('test abort() api', { timeout: 2000 }, t => {
   }, 1500)
 })
 
+test('test follow redirect', { timeout: 2000 }, t => {
+  t.plan(6)
+
+  var params = {
+    path: '/redirect',
+    hostname: '127.0.0.1',
+    port: PORT,
+    method: 'GET'
+  }
+
+  const _follow = dasu.follow
+  dasu.follow = true
+
+  req(params, function (err, res, body) {
+    t.equal(res.status, 200)
+    t.equal(body, 'REDIRECT')
+
+    dasu.follow = false
+    process.nextTick( function () {
+      req(params, function (err, res, body) {
+        t.equal(res.status, 301)
+        t.notEqual(body, 'REDIRECT')
+
+        dasu.follow = true
+        process.nextTick( function () {
+          req(params, function (err, res, body) {
+            t.equal(res.status, 200)
+            t.equal(body, 'REDIRECT')
+
+            // restore follow
+            dasu.follow = _follow
+          })
+        } )
+      })
+    } )
+  })
+})
+
 test('close local mockup test server', t => {
   t.plan(2)
 
