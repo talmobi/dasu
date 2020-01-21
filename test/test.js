@@ -225,6 +225,8 @@ test('test dasu.req api && response headers', { timeout: 2000 }, t => {
       t.equal(res.headers[header], res.getResponseHeader(header), 'header [' + header + '] ok!')
     })
 
+    t.equal( res.headers, res.getAllResponseHeaders(), 'res.getAllResponseHeaders() ok!' )
+
     t.pass('response header tests passed!')
     t.end()
   })
