@@ -53,6 +53,12 @@ function browserRequest ( opts, dataString, callback ) {
     console.log( 'dasu: url [' + url + ']' )
   }
 
+  if ( client.debug ) {
+    console.log( '--- dasu opts ---' )
+    console.log( opts )
+    console.log()
+  }
+
   req.open( opts.method, url, true )
 
   req.onload = function () {
@@ -363,6 +369,13 @@ function request ( params, done ) {
         res.status = res.statusCode
       } else {
         res.statusCode = res.status
+      }
+
+      if ( client.debug ) {
+        client.log += '\n-------------\n'
+        client.log += ( new Date() )
+        client.log += 'headers:\n' + JSON.stringify( res.headers, null, 2 ) + '\n\n'
+        client.log += 'body:\n' + body + '\n'
       }
 
       if (
