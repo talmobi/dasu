@@ -342,6 +342,9 @@ function request ( params, done ) {
   var redirectCount = 0
   var REDIRECT_LIMIT = 3
 
+  // log responses (and reset last)
+  client.log = ''
+
   // uses XMLHttpRequest if available, else nodejs http/https library
   return _request( opts, dataString, reqCallback )
 
@@ -401,8 +404,18 @@ function request ( params, done ) {
           parsedUrl = new URL( loc )
         } else {
           if ( _currentMode === 'node' ) {
-            var require_ = require
             parsedUrl = require_( 'url' ).parse( loc )
+          }
+        }
+
+        if ( client.debug ) {
+          if ( _currentMode === 'node' ) {
+            try {
+              var fs = require_( 'fs' )
+              fs.writeFileSync( 'debug.dasu-response.log', client.log, 'utf8' )
+            } catch ( err ) { /* ignore */ }
+          } else {
+            console.log( client.log )
           }
         }
 
