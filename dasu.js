@@ -5,6 +5,10 @@ var client = {
   mode: 'auto' // possible values: 'auto', 'node', 'browser'
 }
 
+// use this require hack so that bundlers don't automatically bundle
+// node's http library within exported bundles
+var require_ = require
+
 var _request = function () {
   throw new Error( 'dasu: no _request implementation found!' )
 }
@@ -118,9 +122,6 @@ function nodeRequest ( opts, dataString, callback ) {
   client._mode = 'node'
 
   // assume in nodejs environment, use nodejs core http lib
-  // use this require hack so that bundlers don't automatically bundle
-  // node's http library within exported bundles
-  var require_ = require
   var http = require_( 'http' )
   var https = require_( 'https' )
   var zlib = require_( 'zlib' )
