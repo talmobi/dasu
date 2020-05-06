@@ -7,6 +7,7 @@
     "dist/dasu.min.js"
   ],
   "scripts": {
+    "watch": "miru -f dasu.js -e 'npm run build'",
     "build": "npm run build:js && npm run build:js:min",
     "build:js": "rollup -f umd dasu.js > dist/dasu.js",
     "build:js:min": "uglifyjs dist/dasu.js -cmo dist/dasu.min.js",
@@ -29,6 +30,7 @@
     "body-parser": "~1.19.0",
     "express": "~4.17.1",
     "faucet": "0.0.1",
+    "miru": "~0.14.3",
     "passlint": "0.0.13",
     "rollup": "~0.33.1",
     "spacestandard": "0.0.6",

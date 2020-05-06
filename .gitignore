@@ -2,3 +2,6 @@ node_modules
 *.log
 *.sw?
 *.DS_STORE
+
+# temp watch file
+miru-connect.js
