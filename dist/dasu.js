@@ -173,6 +173,21 @@
         res.pipe( deflate )
       }
 
+      var contentType = res.headers[ 'content-type' ]
+      if ( contentType ) {
+        if ( contentType.indexOf( 'text/' ) >= 0 ) {
+          if ( contentType.indexOf( 'ascii' ) >= 0 ) {
+            stream.setEncoding( 'ascii' )
+          } else {
+            stream.setEncoding( 'utf8' )
+          }
+        } else {
+          stream.setEncoding( 'binary' )
+        }
+      } else {
+        stream.setEncoding( 'binary' )
+      }
+
       stream.on( 'data', function ( chunk ) {
         buffer.push( chunk )
       } )
