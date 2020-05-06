@@ -185,7 +185,8 @@ test('test better default port based on protocol if omitted', t => {
   })
 })
 
-test('test public uinames.com api (returns a random person information)', t => {
+// skip as uinames.com is currently unavailable
+test.skip('test public uinames.com api (returns a random person information)', t => {
   t.plan(6)
 
   var params = {
@@ -204,6 +205,30 @@ test('test public uinames.com api (returns a random person information)', t => {
     t.ok(typeof json.surname === 'string', 'found surname')
     t.ok(typeof json.gender === 'string', 'found gender')
     t.ok(typeof json.region === 'string', 'found region')
+  })
+})
+
+test('test public randomuser.me api (returns a random person information)', t => {
+  t.plan(6)
+
+  var params = {
+    path: '/api/',
+    hostname: 'randomuser.me',
+    protocol: 'https:',
+    method: 'GET'
+  }
+
+  xhr(params, function (err, data) {
+    t.error(err, 'no xhr errors')
+    t.ok(data, 'data received')
+    console.log( data )
+    dasu.debug = true
+    var json = JSON.parse(data)
+    var person = json.results[ 0 ]
+    t.ok(typeof person.name.first === 'string', 'found name')
+    t.ok(typeof person.name.last === 'string', 'found surname')
+    t.ok(typeof person.gender === 'string', 'found gender')
+    t.ok(typeof person.location.city === 'string', 'found region')
   })
 })
 
