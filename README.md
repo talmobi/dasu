@@ -2,6 +2,10 @@
 [![npm](https://img.shields.io/npm/dm/dasu.svg?maxAge=3600)](https://www.npmjs.com/package/dasu)
 [![npm](https://img.shields.io/npm/l/dasu.svg?maxAge=3600)](https://www.npmjs.com/package/dasu)
 
+![macos](https://github.com/talmobi/dasu/workflows/macos/badge.svg)
+![windows](https://github.com/talmobi/dasu/workflows/windows/badge.svg)
+![ubuntu](https://github.com/talmobi/dasu/workflows/ubuntu/badge.svg)
+
 # 出す　ー　dasu
 ## The same xhr API for both client and server
 
