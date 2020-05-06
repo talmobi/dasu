@@ -208,7 +208,7 @@ test.skip('test public uinames.com api (returns a random person information)', t
   })
 })
 
-test('test public randomuser.me api (returns a random person information)', t => {
+test('test public json api (returns a random person information)', t => {
   t.plan(6)
 
   var params = {
