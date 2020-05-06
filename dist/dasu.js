@@ -243,7 +243,7 @@
         parsedUrl = new URL( params )
       } else {
         if ( _currentMode === 'node' ) {
-          parsedUrl = require_( 'url' ).parse( loc )
+          parsedUrl = require_( 'url' ).parse( params )
         }
       }
 
