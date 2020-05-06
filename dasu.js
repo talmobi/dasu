@@ -445,7 +445,7 @@ function request ( params, done ) {
           opts.host = parsedUrl.host && parsedUrl.host
           opts.hostname = parsedUrl.hostname && parsedUrl.hostname
           opts.port = parsedUrl.port && parsedUrl.port
-          opts.path = parsedUrl.path && parsedUrl.path
+          opts.path = parsedUrl.path && parsedUrl.pathname
           return _request( opts, dataString, reqCallback )
         }
       }
