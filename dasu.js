@@ -233,6 +233,27 @@ function request ( params, done ) {
     _request = nodeRequest
   }
 
+  if ( typeof params === 'string' ) {
+    // shorthand for GET request
+
+    var parsedUrl
+    if ( typeof URL !== 'undefined' ) {
+      parsedUrl = new URL( params )
+    } else {
+      if ( _currentMode === 'node' ) {
+        parsedUrl = require_( 'url' ).parse( loc )
+      }
+    }
+
+    params = {}
+    params.method = 'GET'
+    params.protocol = parsedUrl.protocol
+    params.host = parsedUrl.host
+    params.hostname = parsedUrl.hostname
+    params.port = parsedUrl.port
+    params.path = parsedUrl.path || parsedUrl.pathname
+  }
+
   var contentType = ''
   var data = ( params.data || params.json ) || ''
   var dataString = ''
