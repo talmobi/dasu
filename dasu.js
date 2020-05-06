@@ -173,7 +173,11 @@ function nodeRequest ( opts, dataString, callback ) {
 
     var contentType = res.headers[ 'content-type' ]
     if ( contentType.indexOf( 'text/' ) >= 0 ) {
-      stream.setEncoding( 'utf8' )
+      if ( contentType.indexOf( 'ascii' ) >= 0 ) {
+        stream.setEncoding( 'ascii' )
+      } else {
+        stream.setEncoding( 'utf8' )
+      }
     } else {
       stream.setEncoding( 'binary' )
     }
