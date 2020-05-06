@@ -11,6 +11,10 @@
     mode: 'auto' // possible values: 'auto', 'node', 'browser'
   }
 
+  // use this require hack so that bundlers don't automatically bundle
+  // node's http library within exported bundles
+  var require_ = require
+
   var _request = function () {
     throw new Error( 'dasu: no _request implementation found!' )
   }
@@ -49,6 +53,12 @@
 
     if ( client.debug ) {
       console.log( 'dasu: url [' + url + ']' )
+    }
+
+    if ( client.debug ) {
+      console.log( '--- dasu opts ---' )
+      console.log( opts )
+      console.log()
     }
 
     req.open( opts.method, url, true )
@@ -120,9 +130,6 @@
     client._mode = 'node'
 
     // assume in nodejs environment, use nodejs core http lib
-    // use this require hack so that bundlers don't automatically bundle
-    // node's http library within exported bundles
-    var require_ = require
     var http = require_( 'http' )
     var https = require_( 'https' )
     var zlib = require_( 'zlib' )
@@ -226,6 +233,27 @@
     } else {
       _currentMode = 'node'
       _request = nodeRequest
+    }
+
+    if ( typeof params === 'string' ) {
+      // shorthand for GET request
+
+      var parsedUrl
+      if ( typeof URL !== 'undefined' ) {
+        parsedUrl = new URL( params )
+      } else {
+        if ( _currentMode === 'node' ) {
+          parsedUrl = require_( 'url' ).parse( loc )
+        }
+      }
+
+      params = {}
+      params.method = 'GET'
+      params.protocol = parsedUrl.protocol
+      params.host = parsedUrl.host
+      params.hostname = parsedUrl.hostname
+      params.port = parsedUrl.port
+      params.path = parsedUrl.path || parsedUrl.pathname
     }
 
     var contentType = ''
@@ -337,6 +365,9 @@
     var redirectCount = 0
     var REDIRECT_LIMIT = 3
 
+    // log responses (and reset last)
+    client.log = ''
+
     // uses XMLHttpRequest if available, else nodejs http/https library
     return _request( opts, dataString, reqCallback )
 
@@ -366,6 +397,13 @@
           res.statusCode = res.status
         }
 
+        if ( client.debug ) {
+          client.log += '\n-------------\n'
+          client.log += ( new Date() )
+          client.log += 'headers:\n' + JSON.stringify( res.headers, null, 2 ) + '\n\n'
+          client.log += 'body:\n' + body + '\n'
+        }
+
         if (
           client.follow &&
           res.status >= 300 && res.status < 400 &&
@@ -389,8 +427,18 @@
             parsedUrl = new URL( loc )
           } else {
             if ( _currentMode === 'node' ) {
-              var require_ = require
               parsedUrl = require_( 'url' ).parse( loc )
+            }
+          }
+
+          if ( client.debug ) {
+            if ( _currentMode === 'node' ) {
+              try {
+                var fs = require_( 'fs' )
+                fs.writeFileSync( 'debug.dasu-response.log', client.log, 'utf8' )
+              } catch ( err ) { /* ignore */ }
+            } else {
+              console.log( client.log )
             }
           }
 
@@ -399,7 +447,7 @@
             opts.host = parsedUrl.host && parsedUrl.host
             opts.hostname = parsedUrl.hostname && parsedUrl.hostname
             opts.port = parsedUrl.port && parsedUrl.port
-            opts.path = parsedUrl.path && parsedUrl.path
+            opts.path = parsedUrl.path && parsedUrl.pathname
             return _request( opts, dataString, reqCallback )
           }
         }
