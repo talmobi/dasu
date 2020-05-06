@@ -171,6 +171,13 @@ function nodeRequest ( opts, dataString, callback ) {
       res.pipe( deflate )
     }
 
+    var contentType = res.headers[ 'content-type' ]
+    if ( contentType.indexOf( 'text/' ) >= 0 ) {
+      stream.setEncoding( 'utf8' )
+    } else {
+      stream.setEncoding( 'binary' )
+    }
+
     stream.on( 'data', function ( chunk ) {
       buffer.push( chunk )
     } )
