@@ -24,6 +24,9 @@
 
     var req = new window.XMLHttpRequest()
 
+    if ( !window ) throw new Error( 'no global browser "window" object found.' )
+    if ( !window.location ) throw new Error( 'no global browser "window.location" object found.' )
+
     opts.protocol = opts.protocol || ( window.location.protocol ) || 'http'
     if ( opts.protocol[ opts.protocol.length - 1 ] !== ':' ) opts.protocol += ':'
     // opts.host = opts.host || window.location.host
@@ -257,9 +260,11 @@
       if ( typeof URL !== 'undefined' ) {
         parsedUrl = new URL( params )
       } else {
-        if ( _currentMode === 'node' ) {
-          parsedUrl = require_( 'url' ).parse( params )
-        }
+        parsedUrl = require_( 'url' ).parse( params )
+      }
+
+      if ( typeof parsedUrl !== 'object' ) {
+        throw new Error( 'failed to parse params shorthand: ' + params )
       }
 
       params = {}
