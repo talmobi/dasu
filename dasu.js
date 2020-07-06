@@ -258,9 +258,7 @@ function request ( params, done ) {
     if ( typeof URL !== 'undefined' ) {
       parsedUrl = new URL( params )
     } else {
-      if ( _currentMode === 'node' ) {
-        parsedUrl = require_( 'url' ).parse( params )
-      }
+      parsedUrl = require_( 'url' ).parse( params )
     }
 
     params = {}
