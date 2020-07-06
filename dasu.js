@@ -22,6 +22,9 @@ function browserRequest ( opts, dataString, callback ) {
 
   var req = new window.XMLHttpRequest()
 
+  if ( !window ) throw new Error( 'no global browser "window" object found.' )
+  if ( !window.location ) throw new Error( 'no global browser "window.location" object found.' )
+
   opts.protocol = opts.protocol || ( window.location.protocol ) || 'http'
   if ( opts.protocol[ opts.protocol.length - 1 ] !== ':' ) opts.protocol += ':'
   // opts.host = opts.host || window.location.host
