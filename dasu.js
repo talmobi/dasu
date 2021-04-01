@@ -461,11 +461,21 @@ function request ( params, done ) {
         }
 
         if ( parsedUrl ) {
-          opts.protocol = parsedUrl.protocol && parsedUrl.protocol
-          opts.host = parsedUrl.host && parsedUrl.host
-          opts.hostname = parsedUrl.hostname && parsedUrl.hostname
-          opts.port = parsedUrl.port && parsedUrl.port
-          opts.path = parsedUrl.path && parsedUrl.pathname
+          Object.keys( opts ).forEach( function ( key ) {
+            opts[ key ] = parsedUrl[ key ]
+          } )
+
+          opts.protocol = parsedUrl.protocol
+          opts.host = parsedUrl.host
+          opts.hostname = parsedUrl.hostname
+          opts.port = parsedUrl.port
+
+          var p = ( parsedUrl.path || parsedUrl.pathname ) || ''
+          var search = parsedUrl.search || ''
+          var fp = p + search
+          opts.path = fp
+          opts.pathname = fp
+
           return _request( opts, dataString, reqCallback )
         }
       }
