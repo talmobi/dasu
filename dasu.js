@@ -2,7 +2,8 @@
 
 var client = {
   follow: true, // auto-follow redirects
-  mode: 'auto' // possible values: 'auto', 'node', 'browser'
+  mode: 'auto', // possible values: 'auto', 'node', 'browser'
+  log: '',
 }
 
 // use this require hack so that bundlers don't automatically bundle
@@ -69,7 +70,7 @@ function browserRequest ( opts, dataString, callback ) {
   }
 
   req.onerror = function () {
-    var desc = '' + opts.method.toUpperCase() + ' ' + url
+    var desc = '' + (opts.method || 'get').toUpperCase() + ' ' + url
 
     var err = {
       name: 'NetworkError',
@@ -104,7 +105,7 @@ function browserRequest ( opts, dataString, callback ) {
   try {
     req.send( dataString )
   } catch ( err ) {
-    var desc = '' + opts.method.toUpperCase() + ' ' + url
+    var desc = '' + (opts.method || 'get').toUpperCase() + ' ' + url
 
     err.desc = desc
     err.url = url
@@ -204,7 +205,7 @@ function nodeRequest ( opts, dataString, callback ) {
     var origin = opts.protocol + '//' + ( opts.hostname + ( opts.port ? ( ':' + opts.port ) : '' ) )
     var url = origin + opts.path
 
-    var desc = '' + opts.method.toUpperCase() + ' ' + url
+    var desc = '' + (opts.method || 'get').toUpperCase() + ' ' + url
 
     err.desc = desc
     err.url = url
@@ -431,11 +432,12 @@ function request ( params, done ) {
         redirectCount++
 
         var loc = res.headers[ 'location' ]
+        // normalize location shorthand to url
         if ( loc.slice( 0, 2 ) === '//' ) {
           loc = params.protocol + ':' + loc
         }
+        // path only
         if ( loc[ 0 ] === '/' ) {
-          // path only
           opts.path = loc
           return _request( opts, dataString, reqCallback )
         }
@@ -461,6 +463,7 @@ function request ( params, done ) {
         }
 
         if ( parsedUrl ) {
+          // update opts for following the redirection url
           Object.keys( opts ).forEach( function ( key ) {
             opts[ key ] = parsedUrl[ key ]
           } )

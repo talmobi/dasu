@@ -8,7 +8,8 @@
 
   var client = {
     follow: true, // auto-follow redirects
-    mode: 'auto' // possible values: 'auto', 'node', 'browser'
+    mode: 'auto', // possible values: 'auto', 'node', 'browser'
+    log: '',
   }
 
   // use this require hack so that bundlers don't automatically bundle
@@ -64,6 +65,7 @@
       console.log()
     }
 
+    opts.method = 'GET'
     req.open( opts.method, url, true )
 
     req.onload = function () {
