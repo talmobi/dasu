@@ -9,7 +9,7 @@
   var client = {
     follow: true, // auto-follow redirects
     mode: 'auto', // possible values: 'auto', 'node', 'browser'
-    log: '',
+    log: ''
   }
 
   // use this require hack so that bundlers don't automatically bundle
@@ -65,7 +65,6 @@
       console.log()
     }
 
-    opts.method = 'GET'
     req.open( opts.method, url, true )
 
     req.onload = function () {
@@ -73,7 +72,7 @@
     }
 
     req.onerror = function () {
-      var desc = '' + opts.method.toUpperCase() + ' ' + url
+      var desc = '' + ( opts.method || 'get' ).toUpperCase() + ' ' + url
 
       var err = {
         name: 'NetworkError',
@@ -108,7 +107,7 @@
     try {
       req.send( dataString )
     } catch ( err ) {
-      var desc = '' + opts.method.toUpperCase() + ' ' + url
+      var desc = '' + ( opts.method || 'get' ).toUpperCase() + ' ' + url
 
       err.desc = desc
       err.url = url
@@ -208,7 +207,7 @@
       var origin = opts.protocol + '//' + ( opts.hostname + ( opts.port ? ( ':' + opts.port ) : '' ) )
       var url = origin + opts.path
 
-      var desc = '' + opts.method.toUpperCase() + ' ' + url
+      var desc = '' + ( opts.method || 'get' ).toUpperCase() + ' ' + url
 
       err.desc = desc
       err.url = url
@@ -435,11 +434,12 @@
           redirectCount++
 
           var loc = res.headers[ 'location' ]
+          // normalize location shorthand to url
           if ( loc.slice( 0, 2 ) === '//' ) {
             loc = params.protocol + ':' + loc
           }
+          // path only
           if ( loc[ 0 ] === '/' ) {
-            // path only
             opts.path = loc
             return _request( opts, dataString, reqCallback )
           }
@@ -465,6 +465,7 @@
           }
 
           if ( parsedUrl ) {
+            // update opts for following the redirection url
             Object.keys( opts ).forEach( function ( key ) {
               opts[ key ] = parsedUrl[ key ]
             } )

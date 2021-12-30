@@ -3,7 +3,7 @@
 var client = {
   follow: true, // auto-follow redirects
   mode: 'auto', // possible values: 'auto', 'node', 'browser'
-  log: '',
+  log: ''
 }
 
 // use this require hack so that bundlers don't automatically bundle
@@ -70,7 +70,7 @@ function browserRequest ( opts, dataString, callback ) {
   }
 
   req.onerror = function () {
-    var desc = '' + (opts.method || 'get').toUpperCase() + ' ' + url
+    var desc = '' + ( opts.method || 'get' ).toUpperCase() + ' ' + url
 
     var err = {
       name: 'NetworkError',
@@ -105,7 +105,7 @@ function browserRequest ( opts, dataString, callback ) {
   try {
     req.send( dataString )
   } catch ( err ) {
-    var desc = '' + (opts.method || 'get').toUpperCase() + ' ' + url
+    var desc = '' + ( opts.method || 'get' ).toUpperCase() + ' ' + url
 
     err.desc = desc
     err.url = url
@@ -205,7 +205,7 @@ function nodeRequest ( opts, dataString, callback ) {
     var origin = opts.protocol + '//' + ( opts.hostname + ( opts.port ? ( ':' + opts.port ) : '' ) )
     var url = origin + opts.path
 
-    var desc = '' + (opts.method || 'get').toUpperCase() + ' ' + url
+    var desc = '' + ( opts.method || 'get' ).toUpperCase() + ' ' + url
 
     err.desc = desc
     err.url = url
